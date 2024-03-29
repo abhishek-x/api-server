@@ -40,6 +40,10 @@ const config = {
 
 app.use(express.json())
 
+app.get('/', (req, res) => {
+    res.send("API Server is running...")
+})
+
 app.post('/project', async (req, res) => {
     const { gitURL, slug } = req.body
     const projectSlug = slug ? slug : generateSlug()
