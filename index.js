@@ -155,14 +155,14 @@ app.post('/project', async (req, res) => {
         networkConfiguration: {
             awsvpcConfiguration: {
                 assignPublicIp: 'ENABLED',
-                subnets: ['subnet-0540a0265b9169603', 'subnet-08b108fe63178c38d', 'subnet-084d7139aed94bb4d', 'subnet-05169a3a1eaf37e30', 'subnet-0064deff83d190d94', 'subnet-041026c091858c6cb'],
-                securityGroups: ['sg-0758b9e68218c20c9']
+                subnets: ['subnet-082b82a29a054e11a', 'subnet-0f12d8bddde47477e', 'subnet-0fd482501205310c9', 'subnet-0470b824371f55363', 'subnet-04e3b60b1ab3ff862', 'subnet-0ab57e8aa37a8de33'],
+                securityGroups: ['sg-076de8251bbfcf339']
             }
         },
         overrides: {
             containerOverrides: [
                 {
-                    name: 'builder-image',
+                    name: 'build-image',
                     environment: [
                         { name: 'GIT_REPOSITORY__URL', value: gitURL },
                         { name: 'PROJECT_ID', value: bucketName }
@@ -174,7 +174,15 @@ app.post('/project', async (req, res) => {
 
     await ecsClient.send(command);
 
-    return res.json({ status: 'queued', data: { bucketName, url: `http://${bucketName}.s3-website.ap-south-1.amazonaws.com` } })
+    return res.json(
+        { 
+            status: 'queued', 
+            data: { 
+                projectSlug: bucketName, 
+                url: `http://${bucketName}.s3-website.${process.env.AWS_REGION}.amazonaws.com` 
+            } 
+        }
+    )
 })
 
 async function initRedisSubscribe() {
